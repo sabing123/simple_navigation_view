@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<item
+    android:id="@+id/fname"
+    android:title="First Name"
+    />
+
+    <item
+        android:id="@+id/lname"
+        android:title="Last Name"
+        />
+
+    <item
+        android:id="@+id/address"
+        android:title="Address"
+        />
+
+    <item
+        android:id="@+id/dob"
+        android:title="Date of Birth"
+        />
+
+    <item
+        android:id="@+id/gender"
+        android:title="gender"
+        />
+    <item
+        android:id="@+id/btnedit"
+        android:title=""
+        app:actionLayout="@layout/button_edit"
+        app:showAsAction="ifRoom"/>
+</menu>
