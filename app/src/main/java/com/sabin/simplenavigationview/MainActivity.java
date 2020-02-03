@@ -28,13 +28,22 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener{
 
     DrawerLayout drawerLayout;
     Toolbar toolbar;
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
 
+    TextView ProximitySensor, data;
+    SensorManager mySensorManager;
+    Sensor myProximitySensor;
+
+    private SensorManager sensorManager;
+    private Sensor sensor;
+    private TextView textView;
+    boolean running = false;
+    float count;
 
 
 
@@ -53,12 +62,87 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        ProximitySensor = (TextView) findViewById(R.id.proximitySensor);
+        data = (TextView) findViewById(R.id.data);
+        mySensorManager = (SensorManager) getSystemService(
+                Context.SENSOR_SERVICE);
+        myProximitySensor = mySensorManager.getDefaultSensor(
+                Sensor.TYPE_PROXIMITY);
+        if (myProximitySensor == null) {
+            ProximitySensor.setText("No Proximity Sensor!");
+        } else {
+            mySensorManager.registerListener(proximitySensorEventListener,
+                    myProximitySensor,
+                    SensorManager.SENSOR_DELAY_NORMAL);
+        }
 
+        textView = findViewById(R.id.steps);
 
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        Sensor sensor1 = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+        if(sensor1==null)
+            Toast.makeText(this, "DETECTOR NOT FOUND", Toast.LENGTH_SHORT).show();
+
+        //count = sensor.getFifoReservedEventCount();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        running  = true;
+        if(sensor!=null){
+            sensorManager.registerListener(this,sensor,SensorManager.SENSOR_DELAY_FASTEST);
+        }
+        else
+            Toast.makeText(this, "SENSOR NOT FOUND", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        running = false;
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if(running){
+            textView.setText(String.valueOf(sensorEvent.values[0]-count));
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
 
 
+    SensorEventListener proximitySensorEventListener
+            = new SensorEventListener() {
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // TODO Auto-generated method stub
+        }
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            WindowManager.LayoutParams params = MainActivity.this.getWindow().getAttributes();
+            if(event.sensor.getType()==Sensor.TYPE_PROXIMITY){
+
+                if(event.values[0]==0){
+                    params.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                    params.screenBrightness = 0;
+                    getWindow().setAttributes(params);
+                }
+                else{
+                    params.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                    params.screenBrightness = -1f;
+                    getWindow().setAttributes(params);
+                }
+            }
+        }
+    };
 
 
     @Override

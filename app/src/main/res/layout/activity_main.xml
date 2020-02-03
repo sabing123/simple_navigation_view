@@ -28,15 +28,26 @@
                />
        </androidx.appcompat.widget.Toolbar>
 
-
        <TextView
+           android:layout_gravity="center"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:gravity="bottom|center"
+           android:text="STEPS"
            android:layout_marginTop="100dp"
-           android:text="Light"
-           android:textSize="25dp"
-           android:id="@+id/textView"
-           />
+           android:textSize="50dp"/>
+
+       <TextView
+           android:id="@+id/steps"
+           android:layout_weight="1"
+           android:layout_gravity="center"
+           android:gravity="center_horizontal"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="150dp"
+           android:text="0"
+           android:textSize="50dp"/>
 
        <TextView
            android:id="@+id/proximitySensor"
